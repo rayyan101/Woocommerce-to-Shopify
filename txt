@@ -1,0 +1,94 @@
+/**
+		 * Ajax Callback Function.
+		 * 
+		 */
+		public function WSM_ajax_callback_function() {
+			ob_start();
+			global $post;
+			?> <h1> This is Heading </h1> 
+			<?php print_r("testingggggggggggggggggggggggg"); die(); ?>
+			<?php
+			$output_string = ob_get_contents();
+			ob_end_clean();
+			wp_die($output_string); 
+			wp_reset_postdata(); 			
+		}
+
+
+
+
+
+        jQuery(document).ready(function($){ 
+            $("#sync").on("click",function(){
+                // alert("On Click Function");
+                var hidden_value = $('#post_id').val();
+                jQuery.ajax({
+                    url:   ajax_object.ajaxurl,
+                    type: 'POST',
+                    data: {  
+                        action: 'WSM_ajax_callback_function',  
+                        hidden_value: hidden_value 
+                    },
+                    success: function (data) {
+                        console.log(data);
+                     }
+                });
+            });
+        });
+
+
+
+
+        public function WSM_ajax_callback_function() { 
+			ob_start();
+			global $post;
+			$test = "this is variable";
+			$post_id = $_REQUEST['hidden_value'];
+			?> <h1> This is Heading </h1> 
+			<p> <?php echo $post_id;  ?> </p>
+			<p> <?php echo $test;  ?> </p>
+
+			<div> <?php echo get_product($post_id);?> </div> 
+			<?php
+			$output_string = ob_get_contents();
+			ob_end_clean();
+			wp_die($output_string); 
+			wp_reset_postdata(); 			
+		}
+
+
+
+
+
+
+
+
+
+		$url = 'https://codup-1717.myshopify.com/admin/api/2022-07/products.json';
+
+		$body = array(
+			'title' => 'Anees Yunus'
+			);
+
+		$header = array(
+			'X-Shopify-Access-Token' => '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',
+			);
+		$product = [
+			"product" => $body
+		];
+
+		$args = array(
+			'method' => "POST",
+			'body' => ($product),
+			'timeout' => '10',
+			'headers' =>  $header
+			);
+		
+
+		  $response = wp_remote_POST($url,$args);
+		
+		$apiBody     = json_decode( wp_remote_retrieve_body( $response ) );
+		
+		print_r($apiBody);
+		die();
+		

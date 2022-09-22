@@ -1,0 +1,68 @@
+<?php
+	/**
+	 * Sending Product to Shopify.
+	 *
+	 * @package Woocommerce-shopify-migration
+	 */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
+
+	/**
+	 * Class WSM_Sync_to_shopify.
+	 */
+	class WSM_Sync_to_shopify {
+
+		/**
+		 *  Constructor.
+		 */
+		public function __construct() {
+			add_action('wp_ajax_WSM_ajax_callback_function' , array( $this, 'WSM_ajax_callback_function'));
+			add_action('wp_ajax_nopriv_WSM_ajax_callback_function' , array( $this, 'WSM_ajax_callback_function'));	
+		}
+
+		/**
+		 * Ajax Callback Function.
+		 * 
+		 */
+		public function WSM_ajax_callback_function() { 
+			
+			
+			$productt_id = $_REQUEST['hidden_value'];
+			$product = get_product($productt_id);
+			$title = get_the_title($productt_id);
+
+			echo "rayyan";
+
+			$url = 'https://codup-1717.myshopify.com/admin/api/2022-07/products.json';
+			$body = array(
+				'title' => $title
+				);
+			$header = array(
+				'X-Shopify-Access-Token' => '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',
+				);
+
+			$product = array (
+				"product" => $body
+			);
+			$args = array(
+				'method' => "POST",
+				'body' => $product,
+				'timeout' => '10',
+				'headers' =>  $header
+				);
+			$response = wp_remote_POST($url,$args);
+			$apiBody  = json_decode( wp_remote_retrieve_body( $response ) );
+			
+			// ob_start();
+			// $output_string = ob_get_contents();
+			// ob_end_clean();
+			// wp_die($output_string); 
+			// wp_reset_postdata(); 			
+		}
+	}
+}
+new WSM_Sync_to_shopify();
+?>

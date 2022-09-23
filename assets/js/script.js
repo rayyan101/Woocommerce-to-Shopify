@@ -1,5 +1,6 @@
 jQuery(document).ready(function($){ 
     $("#sync").on("click",function(){
+        $("#sync").css("background-color", "coral");
         // alert("On Click Function");
         var hidden_value = $('#post_id').val();
         jQuery.ajax({
@@ -10,6 +11,7 @@ jQuery(document).ready(function($){
                 hidden_value: hidden_value 
             },
             success: function (data) {
+                console.log("Succuess");
                 console.log(data);
              }
         });

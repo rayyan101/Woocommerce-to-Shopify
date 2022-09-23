@@ -36,14 +36,10 @@ if ( ! class_exists( 'WSM_Migration_button' ) ) {
 		 * 
 		 */
 		public function WSM_sync_button () {
-			global $post;
-			?><pre><?php
-			print_r($post );
-			?></pre><?php
-			?>
+			
+			global $post; ?>
 			<a href="#" class="sync_button" id="sync" name="sync">Sync Product</a>
-			<input type="text" id="post_id" name="post_id" value="<?php echo $post->ID ?>" style="display: none;" value="">
-			<?php 
+			<input type="text" class="button button-primary" id="post_id" name="post_id" value="<?php echo $post->ID ?>" style="display: none;" value=""> <?php
 		}
 	}
 }

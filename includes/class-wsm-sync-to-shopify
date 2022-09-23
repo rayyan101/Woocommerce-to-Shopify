@@ -31,36 +31,87 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 			
 			
 			$productt_id = $_REQUEST['hidden_value'];
+
 			$product = get_product($productt_id);
-			$title = get_the_title($productt_id);
 
-			echo "rayyan";
+			$status = $product->status;
 
-			$url = 'https://codup-1717.myshopify.com/admin/api/2022-07/products.json';
-			$body = array(
-				'title' => $title
-				);
-			$header = array(
-				'X-Shopify-Access-Token' => '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',
-				);
-
-			$product = array (
-				"product" => $body
-			);
-			$args = array(
-				'method' => "POST",
-				'body' => $product,
-				'timeout' => '10',
-				'headers' =>  $header
-				);
-			$response = wp_remote_POST($url,$args);
-			$apiBody  = json_decode( wp_remote_retrieve_body( $response ) );
+			if($status=="publish") {
 			
-			// ob_start();
-			// $output_string = ob_get_contents();
-			// ob_end_clean();
-			// wp_die($output_string); 
-			// wp_reset_postdata(); 			
+				$post_id = $productt_id;
+
+				$value = get_post_meta($post_id,"Shopify_Product_Id",true);
+
+				if($value) { 
+
+					$url = 'https://codup-1717.myshopify.com/admin/api/2022-07/products/'.$value.'.json';
+
+					$title = get_the_title($productt_id);
+					$descr = $product->description;
+
+					$body = array(
+						'title' => $title,
+						'body_html' => $descr,
+						'variants' => array (
+							array (
+								'price' => '20.00'
+							)
+						)
+					);
+					
+					$header = array(
+						'X-Shopify-Access-Token' => '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',
+						);
+
+					$product = array (
+						"product" => $body
+						);
+					$args = array(
+						'method' => "PUT",
+						'body' => $product,
+						'timeout' => '10',
+						'headers' =>  $header
+						);
+					
+					$response = wp_remote_POST($url,$args);
+					
+				}
+
+				
+				if(!$value) {
+
+					$url = 'https://codup-1717.myshopify.com/admin/api/2022-07/products.json';
+
+					$title = get_the_title($productt_id);
+					$descr = $product->description;
+
+					$body = array(
+						'title' => $title,
+						'body_html' => $descr
+					);
+					
+					$header = array(
+						'X-Shopify-Access-Token' => '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',
+						);
+
+					$product = array (
+						"product" => $body
+						);
+					$args = array(
+						'method' => "POST",
+						'body' => $product,
+						'timeout' => '10',
+						'headers' =>  $header
+						);
+					
+					$response = wp_remote_POST($url,$args);
+					$apiBody  = json_decode( wp_remote_retrieve_body( $response ) ); 
+
+					$shopify_product_id = $apiBody->product->id;
+					update_post_meta($post_id,"Shopify_Product_Id", $shopify_product_id);
+
+				}
+			}
 		}
 	}
 }

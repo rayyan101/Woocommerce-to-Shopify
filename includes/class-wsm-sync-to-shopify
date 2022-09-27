@@ -47,6 +47,7 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 
 				$value = get_post_meta($post_id,"Shopify_Product_Id",true);
 				
+				//Product Updating.
 				if($value) { 
 
 					$url = 'https://'.$shopify_store_name.'/admin/api/2022-07/products/'.$value.'.json';
@@ -66,6 +67,11 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 							"inventory_quantity" => $stock_quantity
 							
 							)
+						),
+						"images" => array(
+							array(
+								"src" => "https://cdn.shopify.com/static/sample-images/garnished.jpeg",
+							)
 						)
 					);
 					
@@ -82,7 +88,7 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 					
 					$response = wp_remote_POST($url,$args);
 				}
-
+				// Creating New Product.
 				else {
 
 					$url = 'https://'.$shopify_store_name.'/admin/api/2022-07/products.json';
@@ -95,6 +101,11 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 								"price" => $sale_price,
 								"sku" => $sku,
 								"inventory_quantity" => $stock_quantity
+							)
+						),
+						"images" => array(
+							array(
+								"src" => "https://cdn.shopify.com/static/sample-images/garnished.jpeg",
 							)
 						)
 					);

@@ -1,6 +1,8 @@
 jQuery(document).ready(function($){ 
     $("#sync").on("click",function(){
         var hidden_value = $('#post_id').val();
+        $(this).attr('disabled','disabled');
+        setTimeout(function(){$("#sync").html("Syncing..."); });
         jQuery.ajax({
             url:   ajax_object.ajaxurl,
             type: 'POST',
@@ -11,7 +13,9 @@ jQuery(document).ready(function($){
             success: function (data) {
                 console.log("Succuess");
                 console.log(data);
-             }
+                $('#sync').attr('disabled',false);
+                setTimeout(function(){$("#sync").html("Sync Product"); });
+            }
         });
     });
 });

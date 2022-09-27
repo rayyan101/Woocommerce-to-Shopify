@@ -54,3 +54,24 @@ curl -X GET "https://codup-1717.myshopify.com/admin/api/2022-07/products.json" \
         "sku": "qweqweqwqwe" }]
 
 }}
+
+
+
+
+
+
+    if ( is_wp_error( $response ) ) {
+ 
+                $html = '<div id="post-error">';
+                    $html .= __( 'There was a problem retrieving the response from the server.', 'wprp-example' );
+                $html .= '</div><!-- /#post-error -->';
+ 
+            }
+            else {
+ 
+                $html = '<div id="post-success">';
+                    $html .= '<p>' . __( 'Your message posted with success! The response was as follows:', 'wprp-example' ) . '</p>';
+                    $html .= '<p id="response-data">' . $response['body'] . '</p>';
+                $html .= '</div><!-- /#post-error -->';
+ 
+            }

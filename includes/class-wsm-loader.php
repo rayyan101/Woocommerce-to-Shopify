@@ -22,6 +22,8 @@ if ( ! class_exists( 'WSM_Loader' ) ) {
 			$this->includes();
 			add_action( 'admin_enqueue_scripts', array( $this, 'WSM_enqueue_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'WSM_enqueue_scripts' ) );
+
+		
 		}
 
 		/**
@@ -41,6 +43,8 @@ if ( ! class_exists( 'WSM_Loader' ) ) {
 			include_once 'class-wsm-migration-button.php';
 			include_once 'class-wsm-sync-to-shopify';
 			include_once 'class-wsm-credential-form';
+			include_once 'class-wsm-credential-check.php';
+			
 			
 		}
 	}

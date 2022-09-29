@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * Sending Product to Shopify.
+	 * Syncing Product to Shopify.
 	 *
 	 * @package Woocommerce-shopify-migration
 	 */
@@ -19,15 +19,15 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 		 *  Constructor.
 		 */
 		public function __construct() {
-			add_action('wp_ajax_WSM_ajax_callback_function' , array( $this, 'WSM_ajax_callback_function'));
-			add_action('wp_ajax_nopriv_WSM_ajax_callback_function' , array( $this, 'WSM_ajax_callback_function'));	
+			add_action('wp_ajax_wsm_ajax_callback_function' , array( $this, 'wsm_ajax_callback_function'));
+			add_action('wp_ajax_nopriv_wsm_ajax_callback_function' , array( $this, 'wsm_ajax_callback_function'));	
 		}
 
 		/**
-		 * Ajax Callback Function.
+		 * Ajax Callback Function for syncing Product.
 		 * 
 		 */
-		public function WSM_ajax_callback_function() { 
+		public function wsm_ajax_callback_function() { 
 			
 			$shopify_store_name = get_option('shopify_store_name'); 
 			$shopify_store_key = get_option('shopify_store_key');
@@ -42,12 +42,11 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 			$sku = $product->sku;
 
 			if($status=="publish") {
-			
-				$post_id = $productt_id;
 
-				$value = get_post_meta($post_id,"Shopify_Product_Id",true);
+				$post_id = $productt_id;
+				$value = get_post_meta($post_id,"shopify_product_id",true);
 				
-				//Product Updating.
+				//Product Updating if shopify product id found in Databse.
 				if($value) { 
 
 					$url = 'https://'.$shopify_store_name.'/admin/api/2022-07/products/'.$value.'.json';
@@ -65,7 +64,6 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 							"price" => $sale_price,
 							"sku" => $sku,
 							"inventory_quantity" => $stock_quantity
-							
 							)
 						),
 						"images" => array(
@@ -88,9 +86,9 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 					
 					$response = wp_remote_POST($url,$args);
 				}
-				// Creating New Product.
-				else {
 
+				// Creating New Product if Product id is not found.
+				else {
 					$url = 'https://'.$shopify_store_name.'/admin/api/2022-07/products.json';
 
 					$body = array(
@@ -118,6 +116,7 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 					$product = array (
 						"product" =>  $body
 						);
+
 					$args = array(
 						'method' => "POST",
 						'body' => json_encode($product),
@@ -126,11 +125,11 @@ if ( ! class_exists( 'WSM_Sync_to_shopify' ) ) {
 						);
 					
 					$response = wp_remote_POST($url,$args);
+					
+					//Updating Postmata table with shopify product id which we getting in response. 
 					$apiBody  = json_decode( wp_remote_retrieve_body( $response ) ); 
-				
 					$shopify_product_id = $apiBody->product->id;
-					update_post_meta($post_id,"Shopify_Product_Id", $shopify_product_id);
-
+					update_post_meta($post_id,"shopify_product_id", $shopify_product_id);
 				}
 			}
 		}

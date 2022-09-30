@@ -1,5 +1,17 @@
 Shopify Store Name: codup-1717.myshopify.com
 
 Shopify Store: Credential: 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
+
+1) Created Migration Tab in Woocommerce Setting Tab.
+2) Created API and Credential Field in Migration Tab.
+3) Checking API Errors on the Time of Input.
+4) Showing Error or Succuss Messege Apter API Inserting.
+
+5) Showing Sync Product Button on Add Product Page if API was Insert Succussfully Otherwise Sync Button is Hidden.
+6) If Product Status is Published Product is Syncing to Shopify Store otherwise Not.
+7) Showing Syncing Loader on Processing Time nd Also Button Text Also Change on Some seconds.
+8) Saving Shopify Product ID on Wordpress Database for Using Product Updating.
+9) Once Prodcut is Send to Shopify Store not Sending Again after Button Clicking it will Update Product.
+
             
 
